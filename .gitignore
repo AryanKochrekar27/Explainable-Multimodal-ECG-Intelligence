@@ -35,3 +35,6 @@ ehthumbs.db
 # Streamlit local user credentials
 .streamlit/credentials.toml
 
+# Raw training set scans (137 held-out test scans are already tracked in git)
+initial_dataset/
+
