@@ -1,0 +1,30 @@
+{
+    "random_seed": 42,
+    "input_paths": {
+        "raw_csv": "data/raw/cardiovascular_dataset.csv",
+        "raw_images_dir": "initial_dataset/ECG Images/ECG Images"
+    },
+    "output_paths": {
+        "processed_dir": "data/processed",
+        "reports_dir": "reports",
+        "models_dir": "models"
+    },
+    "split_proportions": {
+        "train": 0.70,
+        "val": 0.15,
+        "test": 0.15
+    },
+    "image_preprocessing": {
+        "target_width": 224,
+        "target_height": 224,
+        "color_mode": "RGB",
+        "normalization": "zero_one",
+        "resampling": "lanczos"
+    },
+    "target_encoding": {
+        "Normal": 0,
+        "Abnormal_Heartbeat": 1,
+        "Myocardial_Infarction": 2,
+        "Post_MI_History": 3
+    }
+}

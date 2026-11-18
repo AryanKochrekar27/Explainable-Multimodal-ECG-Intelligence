@@ -1,0 +1,103 @@
+# ==============================================================================
+# MASTER TRAINING CONFIGURATION
+# Explainable Multimodal ECG Intelligence for Early Cardiac Risk Assessment
+# ==============================================================================
+
+global:
+  project_title: "Explainable ECG Intelligence for Early Cardiac Risk Assessment"
+  random_seed: 42
+  device: "cuda" # Automatically falls back to cpu if cuda is unavailable
+  num_classes: 4
+  class_names:
+    0: "Normal"
+    1: "Abnormal_Heartbeat"
+    2: "Myocardial_Infarction"
+    3: "Post_MI_History"
+
+paths:
+  data_dir: "data/processed"
+  models_dir: "models"
+  reports_dir: "reports"
+  clinical_train: "data/processed/X_train_clinical.csv"
+  clinical_val: "data/processed/X_val_clinical.csv"
+  clinical_test: "data/processed/X_test_clinical.csv"
+  y_train: "data/processed/y_train.csv"
+  y_val: "data/processed/y_val.csv"
+  y_test: "data/processed/y_test.csv"
+  image_manifest: "data/processed/image_split_manifest.csv"
+  label_mapping: "data/processed/label_mapping.json"
+  feature_columns: "data/processed/feature_columns.json"
+  preprocessor_checkpoint: "models/clinical_preprocessor.joblib"
+  ecg_model_checkpoint: "models/ecg_model_best.pt"
+  clinical_model_checkpoint: "models/clinical_model.joblib"
+  multimodal_model_checkpoint: "models/multimodal_model_best.pt"
+
+ecg_vision_model:
+  backbone: "resnet18"
+  input_resolution: [224, 224]
+  input_channels: 3
+  batch_size: 32
+  num_workers: 0 # Windows safe multiprocessing
+  epochs: 25
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  optimizer: "AdamW"
+  loss: "WeightedCrossEntropyLoss"
+  # Cost-sensitive weights handling unique scan imbalance
+  # [Normal: 0.86, Abnormal_Heartbeat: 0.49, Myocardial_Infarction: 3.42, Post_MI_History: 1.48]
+  use_class_weights: true
+  lr_scheduler:
+    name: "ReduceLROnPlateau"
+    mode: "min"
+    factor: 0.5
+    patience: 3
+    min_lr: 0.000001
+  early_stopping:
+    patience: 7
+    monitor: "val_loss"
+  augmentation:
+    color_jitter_brightness: 0.05
+    color_jitter_contrast: 0.05
+    gaussian_noise_std: 0.01
+
+clinical_tabular_model:
+  target_column: "Target_Encoded"
+  input_features: 19
+  logistic_regression:
+    C: 1.0
+    penalty: "l2"
+    solver: "lbfgs"
+    max_iter: 1000
+    random_state: 42
+  random_forest:
+    n_estimators: 100
+    max_depth: 10
+    min_samples_split: 5
+    random_state: 42
+  mlp:
+    hidden_dims: [64, 32]
+    dropout: 0.2
+    learning_rate: 0.001
+    batch_size: 64
+    epochs: 40
+
+multimodal_model:
+  vision_embedding_dim: 64
+  clinical_embedding_dim: 32
+  fusion_hidden_dim: 64
+  dropout: 0.3
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  batch_size: 32
+  epochs: 25
+  early_stopping_patience: 7
+
+explainability:
+  gradcam_target_layer: "layer4"
+  gradcam_num_examples: 8
+  shap_num_background: 100
+  shap_num_test_samples: 50
+
+calibration:
+  num_bins: 10
+  temperature_scaling: true

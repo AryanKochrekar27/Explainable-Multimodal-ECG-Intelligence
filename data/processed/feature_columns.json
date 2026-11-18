@@ -1,0 +1,63 @@
+{
+    "record_count": 4327,
+    "continuous_features": [
+        "Age",
+        "Heart_Rate",
+        "Systolic_BP",
+        "Diastolic_BP",
+        "Cholesterol",
+        "Glucose",
+        "Troponin",
+        "PR_Interval",
+        "QRS_Duration",
+        "QT_Interval",
+        "P_Wave_Duration",
+        "T_Wave_Duration",
+        "ST_Segment_Level",
+        "RR_Interval",
+        "HRV_SDNN",
+        "HRV_RMSSD",
+        "R_Peak_Amplitude",
+        "S_Wave_Amplitude"
+    ],
+    "binary_categorical_features": [
+        "Gender"
+    ],
+    "identifier_columns": [
+        "Record_ID",
+        "ECG_Image_Path"
+    ],
+    "target_columns": [
+        "Target",
+        "Target_Encoded"
+    ],
+    "clinical_aspects": {
+        "demographic": [
+            "Age",
+            "Gender"
+        ],
+        "hemodynamic": [
+            "Heart_Rate",
+            "Systolic_BP",
+            "Diastolic_BP"
+        ],
+        "laboratory": [
+            "Cholesterol",
+            "Glucose",
+            "Troponin"
+        ],
+        "cardiac_ecg_metrics": [
+            "PR_Interval",
+            "QRS_Duration",
+            "QT_Interval",
+            "P_Wave_Duration",
+            "T_Wave_Duration",
+            "ST_Segment_Level",
+            "RR_Interval",
+            "HRV_SDNN",
+            "HRV_RMSSD",
+            "R_Peak_Amplitude",
+            "S_Wave_Amplitude"
+        ]
+    }
+}

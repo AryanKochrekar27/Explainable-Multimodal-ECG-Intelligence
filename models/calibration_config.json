@@ -1,0 +1,20 @@
+{
+    "ecg": {
+        "fitted_temperature": 1.4035,
+        "recommended_temperature": 1.0,
+        "use_temperature_scaling": false,
+        "uncalibrated_ece": 0.0464,
+        "calibrated_ece": 0.053,
+        "uncalibrated_brier": 0.0983,
+        "calibrated_brier": 0.0996
+    },
+    "multimodal": {
+        "fitted_temperature": 0.4378,
+        "recommended_temperature": 0.4378,
+        "use_temperature_scaling": true,
+        "uncalibrated_ece": 0.1916,
+        "calibrated_ece": 0.0295,
+        "uncalibrated_brier": 0.1639,
+        "calibrated_brier": 0.1071
+    }
+}

@@ -1,0 +1,280 @@
+# ==============================================================================
+# IMPLEMENTATION PLAN: PHASE 1 AND PHASE 2
+# EXPLAINABLE MULTIMODAL ECG MODEL TRAINING & CARDIOVASCULAR RISK ASSESSMENT
+# ==============================================================================
+# Project Title : Explainable ECG Intelligence for Early Cardiac Risk Assessment
+# Target Roles  : Senior ML Engineer, DL Researcher, Biomedical Signal Specialist
+# Date          : October 2026
+# Status        : Final Master Implementation Blueprint
+# ==============================================================================
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY & WORKSPACE GROUND-TRUTH DISCOVERY
+--------------------------------------------------------------------------------
+Based on direct inspection of the workspace, preprocessed manifests, and data audit
+records (in `data/processed/` and `reports/FINAL_DATA_PREPROCESSING_REPORT.md`):
+
+1. ECG Data Representation:
+   - Modality: 12-lead paper ECG scans stored as high-resolution images (2213x1572 px).
+   - Processed size: 224x224x3 RGB tensors normalized to [0, 1].
+   - Volume: 928 image files spanning 491 unique patient scans across 4 classes:
+     * Normal (Class 0): 142 unique scans (284 files total)
+     * Abnormal Heartbeat (Class 1): 233 unique scans (233 files total)
+     * Myocardial Infarction (Class 2): 30 unique scans (239 files total)
+     * Post-MI History (Class 3): 86 unique scans (172 files total)
+   - Scientific Rule: As these are digitized paper image scans, they will be modeled
+     strictly using 2D Computer Vision architectures (2D-CNN / ResNet). We will NOT
+     apply 1D signal filters, 1D-CNNs, or claim time-series modeling on image pixels.
+
+2. Clinical Tabular Representation:
+   - Volume: 4,327 clinical records across 19 engineered features.
+   - Files: `X_train_clinical.csv` (N=3,028), `X_val_clinical.csv` (N=649),
+     `X_test_clinical.csv` (N=650), with fitted `models/clinical_preprocessor.joblib`.
+   - Feature Characteristics: Features show synthetic uniform distribution; cardiac
+     troponin and blood pressure metrics are decoupled from true physiology.
+
+3. CSV-to-Image Linkage & Group-Aware Separation:
+   - The CSV column `ECG_Image_Path` contains fictional pointers (`ecg_1.jpg`–`ecg_4327.jpg`)
+     whereas physical images are named `HB(1).jpg`, `MI(1).jpg`, etc.
+   - Non-Negotiable Rule: We refuse to invent fake/random image-to-clinical pairings.
+   - Dual-track solution:
+     * Track A: Train and validate ECG-Only Vision Model on the verified group-aware
+       image splits (`image_split_manifest.csv`) with zero duplicate-image leakage.
+     * Track B: Train and validate Clinical-Only Tabular Model on the clinical partitions.
+     * Track C: Controlled Multimodal Fusion Architecture evaluation using aligned cohort
+       protocols and ablation testing.
+
+--------------------------------------------------------------------------------
+2. MASTER EXECUTION WORKFLOW & STEPS
+--------------------------------------------------------------------------------
+
+STEP 1: PRE-TRAINING READINESS AUDIT
+------------------------------------
+- Action:
+  * Audit all preprocessed files, record counts, class distributions, and MD5 hashes.
+  * Verify that `image_split_manifest.csv` contains zero duplicate hash leakage across
+    Train (649 files / 343 unique), Val (139 files / 74 unique), and Test (140 files / 74 unique).
+  * Confirm that clinical feature scalers were fitted exclusively on training data.
+- Scripts to execute:
+  * `src/audit_training_data.py`
+- Deliverable Artifacts:
+  * `reports/01_training_readiness_audit.md`
+  * `reports/01_training_readiness_audit.json`
+
+STEP 2: ARCHITECTURE & INPUT SPECIFICATION
+------------------------------------------
+- Action:
+  * Formalize architecture decision for 2D Computer Vision vs Tabular representations.
+  * Define model hyperparameters, loss functions (class-weighted categorical cross-entropy),
+    and learning rate schedules.
+- Deliverable Artifacts:
+  * `reports/02_ecg_input_and_architecture.md`
+
+STEP 3: PHASE 1 — ECG-ONLY MODEL TRAINING & VALIDATION
+------------------------------------------------------
+- Action:
+  * Implement reproducible 2D-CNN / transfer learning baseline (e.g., custom ConvNet
+    or fine-tuned ResNet-18) tailored for 224x224x3 ECG images.
+  * Use class-weighted categorical cross-entropy to handle imbalance (especially MI scans).
+  * Train strictly with Train partition; use Validation partition for EarlyStopping
+    (patience 7) and ReduceLROnPlateau. Test set remains strictly untouched.
+  * Calculate validation metrics: Macro Accuracy, Precision, Recall, Macro-F1,
+    per-class Sensitivity, per-class Specificity (One-vs-Rest), and OVR ROC-AUC.
+- Scripts to execute:
+  * `src/train_ecg_model.py`
+- Deliverable Artifacts:
+  * `models/ecg_model_best.keras` (or `.pt`)
+  * `reports/03_ecg_training_history.csv`
+  * `reports/03_ecg_training_curves.png`
+  * `reports/04_ecg_validation_metrics.json`
+  * `reports/04_ecg_validation_report.md`
+  * `reports/04_ecg_confusion_matrix.png`
+  * `reports/04_ecg_classification_report.csv`
+
+STEP 4: PHASE 2 — CLINICAL-ONLY MODEL TRAINING & VALIDATION
+-----------------------------------------------------------
+- Action:
+  * Build separate tabular models using verified clinical features from `X_train_clinical.csv`.
+  * Train three baselines:
+    1. Interpretable Baseline: Logistic Regression (L2 regularization)
+    2. Tree-based Baseline: Random Forest (n_estimators=100) / XGBoost
+    3. Neural Baseline: Tabular Multi-Layer Perceptron (MLP)
+  * Evaluate on validation set (`X_val_clinical.csv`, `y_val.csv`).
+- Scripts to execute:
+  * `src/train_clinical_model.py`
+- Deliverable Artifacts:
+  * `models/clinical_model.joblib` (or `.keras`)
+  * `reports/05_clinical_model_report.md`
+  * `reports/05_clinical_validation_metrics.json`
+
+STEP 5: PHASE 2 — MULTIMODAL FUSION MODEL & FAIR COMPARISON
+-----------------------------------------------------------
+- Action:
+  * Build joint multimodal network architecture:
+    * ECG Vision Branch: 2D-CNN feature backbone -> 64-d embedding.
+    * Clinical Branch: MLP feature extractor -> 32-d embedding.
+    * Fusion Layer: Feature concatenation (96-d) -> Dense(64, ReLU) -> Dropout(0.3) -> Dense(4, Softmax).
+  * Train fused model on the defined multimodal evaluation cohort.
+  * Benchmark all three approaches fairly (ECG-Only vs. Clinical-Only vs. Multimodal Fusion)
+    on the exact same held-out test cohort.
+  * Determine empirically whether multimodal fusion demonstrates superior performance.
+- Scripts to execute:
+  * `src/train_multimodal_model.py`
+  * `src/evaluate_models.py`
+- Deliverable Artifacts:
+  * `models/multimodal_model_best.keras` (or `.pt`)
+  * `reports/06_multimodal_training_history.csv`
+  * `reports/06_model_comparison.csv`
+  * `reports/06_model_comparison.md`
+  * `reports/06_multimodal_confusion_matrix.png`
+
+STEP 6: EXPLAINABLE AI (XAI) MODULES
+------------------------------------
+- Action:
+  * ECG Model: Implement Grad-CAM for the final convolutional layer of the vision backbone.
+    Generate visual overlays on original 12-lead ECG scans with proper colorbars,
+    class labels, and True vs. Predicted annotations.
+  * Clinical Model: Implement SHAP (TreeExplainer or KernelExplainer) to generate
+    global feature importance summaries and individual decision waterfall plots.
+  * Multimodal Model: Generate joint explanations displaying visual attribution alongside
+    the ranked clinical feature contributions.
+  * Document that heatmaps indicate statistical model attribution, NOT medical causality.
+- Scripts to execute:
+  * `src/explain_ecg_model.py`
+  * `src/explain_clinical_model.py`
+  * `src/explain_multimodal_model.py`
+- Deliverable Artifacts:
+  * `reports/07_explainability_report.md`
+  * `reports/07_ecg_attribution_examples/`
+  * `reports/07_shap_summary.png`
+
+STEP 7: PROBABILITY CALIBRATION & RELIABILITY ASSESSMENT
+-------------------------------------------------------
+- Action:
+  * Assess output probability calibration using Reliability Diagrams, Multiclass Brier
+    Score, and Expected Calibration Error (ECE).
+  * Fit any temperature scaling or Platt scaling strictly on validation data.
+  * Document calibrated vs. uncalibrated output behavior.
+- Scripts to execute:
+  * `src/evaluate_calibration.py`
+- Deliverable Artifacts:
+  * `reports/08_calibration_report.md`
+  * `reports/08_reliability_diagram.png`
+
+STEP 8: INTERACTIVE WEB DASHBOARD
+---------------------------------
+- Action:
+  * Build a clean, professional Streamlit web application (`app.py`).
+  * Features:
+    * Input Tab: Upload 12-lead ECG image scan + interactive sliders for clinical variables.
+    * Inference Modes: ECG-Only mode, Clinical-Only mode, or Multimodal Fusion mode.
+    * Output Section: Predicted cardiac category, confidence probabilities, calibration status,
+      and prominent research-only disclaimer.
+    * Explanation Section: Real-time Grad-CAM heatmap visualization and SHAP feature importance plot.
+    * Model Info: Transparent display of architecture details, limitations, and dataset context.
+    * Robust Error Handling: Safe validation of inputs, missing feature guards, and corrupt file checks.
+- Deliverable Artifacts:
+  * `app.py`
+  * `requirements.txt`
+  * `README.md`
+
+STEP 9: AUTOMATED SOFTWARE TESTING SUITE
+----------------------------------------
+- Action:
+  * Implement rigorous Pytest suite covering:
+    1. Checkpoint loading and weight integrity.
+    2. Valid tensor inference shapes and boundary constraints.
+    3. Softmax sum-to-one compliance (0.999 <= sum(p) <= 1.001).
+    4. Label index-to-name mapping verification (`Normal: 0`, `Abnormal_Heartbeat: 1`,
+       `Myocardial_Infarction: 2`, `Post_MI_History: 3`).
+    5. Safe rejection of invalid image dimensions and malformed clinical vectors.
+    6. Grad-CAM and SHAP generation on sample test inputs.
+- Scripts to execute:
+  * `tests/test_pipeline.py`
+- Deliverable Artifacts:
+  * `tests/`
+  * `reports/09_software_tests.md`
+
+STEP 10: EXPERIMENT CONFIGURATION & FINAL COMPREHENSIVE REPORT
+--------------------------------------------------------------
+- Action:
+  * Centralize all hyperparameters, seeds, and metadata in `configs/training_config.yaml`.
+  * Produce the comprehensive final project report consolidating all experimental findings,
+    metrics, comparison tables, XAI exhibits, limitations, and supervisor-ready conclusions.
+- Deliverable Artifacts:
+  * `configs/training_config.yaml`
+  * `reports/FINAL_MODEL_TRAINING_REPORT.md`
+
+--------------------------------------------------------------------------------
+3. REQUIRED PROJECT DIRECTORY STRUCTURE
+--------------------------------------------------------------------------------
+
+ECG/
+|-- configs/
+|   `-- training_config.yaml
+|-- data/
+|   |-- processed/
+|   |   |-- X_train_clinical.csv
+|   |   |-- X_val_clinical.csv
+|   |   |-- X_test_clinical.csv
+|   |   |-- y_train.csv
+|   |   |-- y_val.csv
+|   |   |-- y_test.csv
+|   |   |-- image_split_manifest.csv
+|   |   |-- label_mapping.json
+|   |   `-- feature_columns.json
+|   `-- raw/
+|-- models/
+|   |-- clinical_preprocessor.joblib
+|   |-- ecg_model_best.keras
+|   |-- clinical_model.joblib
+|   `-- multimodal_model_best.keras
+|-- reports/
+|   |-- 01_training_readiness_audit.md
+|   |-- 01_training_readiness_audit.json
+|   |-- 02_ecg_input_and_architecture.md
+|   |-- 03_ecg_training_history.csv
+|   |-- 03_ecg_training_curves.png
+|   |-- 04_ecg_validation_metrics.json
+|   |-- 04_ecg_validation_report.md
+|   |-- 04_ecg_confusion_matrix.png
+|   |-- 05_clinical_model_report.md
+|   |-- 05_clinical_validation_metrics.json
+|   |-- 06_model_comparison.md
+|   |-- 06_model_comparison.csv
+|   |-- 07_explainability_report.md
+|   |-- 07_ecg_attribution_examples/
+|   |-- 07_shap_summary.png
+|   |-- 08_calibration_report.md
+|   |-- 08_reliability_diagram.png
+|   |-- 09_software_tests.md
+|   `-- FINAL_MODEL_TRAINING_REPORT.md
+|-- src/
+|   |-- audit_training_data.py
+|   |-- train_ecg_model.py
+|   |-- train_clinical_model.py
+|   |-- train_multimodal_model.py
+|   |-- evaluate_models.py
+|   |-- explain_ecg_model.py
+|   |-- explain_clinical_model.py
+|   `-- explain_multimodal_model.py
+|-- tests/
+|   `-- test_pipeline.py
+|-- app.py
+|-- requirements.txt
+`-- README.md
+
+--------------------------------------------------------------------------------
+4. NON-NEGOTIABLE SCIENTIFIC & ENGINEERING CONSTRAINTS
+--------------------------------------------------------------------------------
+1. No Data Fabrication: Never invent missing CSV-to-image links or patient IDs.
+2. Zero Split Leakage: Maintain strict group-aware separation by image MD5 hash
+   so that duplicated scans never span train, validation, or test partitions.
+3. Test Set Isolation: The test set will NOT be used for early stopping, model
+   selection, hyperparameter tuning, threshold calibration, or SHAP calculations.
+4. Model Modality Fidelity: An image CNN will be described honestly as 2D computer
+   vision on paper ECG printouts, never misrepresented as numerical 1D time-series processing.
+5. Realistic Clinical Scope: Results will be reported as research prototypes for
+   diagnostic classification, without unsupported claims of clinical readiness or
+   causal event prediction.
+==============================================================================

@@ -1,0 +1,227 @@
+{
+    "best_model": "RandomForest",
+    "models": {
+        "LogisticRegression": {
+            "accuracy": 0.2435,
+            "macro_precision": 0.2411,
+            "macro_recall": 0.2414,
+            "macro_f1": 0.237,
+            "weighted_f1": 0.2384,
+            "roc_auc_ovr": 0.4883,
+            "log_loss": 1.4014,
+            "classification_report": {
+                "Normal": {
+                    "precision": 0.25961538461538464,
+                    "recall": 0.32335329341317365,
+                    "f1-score": 0.288,
+                    "support": 167.0
+                },
+                "Abnormal_Heartbeat": {
+                    "precision": 0.22110552763819097,
+                    "recall": 0.2682926829268293,
+                    "f1-score": 0.24242424242424243,
+                    "support": 164.0
+                },
+                "Myocardial_Infarction": {
+                    "precision": 0.21505376344086022,
+                    "recall": 0.12987012987012986,
+                    "f1-score": 0.16194331983805668,
+                    "support": 154.0
+                },
+                "Post_MI_History": {
+                    "precision": 0.2684563758389262,
+                    "recall": 0.24390243902439024,
+                    "f1-score": 0.25559105431309903,
+                    "support": 164.0
+                },
+                "accuracy": 0.24345146379044685,
+                "macro avg": {
+                    "precision": 0.24105776288334052,
+                    "recall": 0.24135463630863074,
+                    "f1-score": 0.23698965414384954,
+                    "support": 649.0
+                },
+                "weighted avg": {
+                    "precision": 0.24154422337582265,
+                    "recall": 0.24345146379044685,
+                    "f1-score": 0.2383817872418871,
+                    "support": 649.0
+                }
+            },
+            "confusion_matrix": [
+                [
+                    54,
+                    64,
+                    20,
+                    29
+                ],
+                [
+                    56,
+                    44,
+                    19,
+                    45
+                ],
+                [
+                    52,
+                    47,
+                    20,
+                    35
+                ],
+                [
+                    46,
+                    44,
+                    34,
+                    40
+                ]
+            ]
+        },
+        "RandomForest": {
+            "accuracy": 0.2496,
+            "macro_precision": 0.2491,
+            "macro_recall": 0.2478,
+            "macro_f1": 0.2455,
+            "weighted_f1": 0.2466,
+            "roc_auc_ovr": 0.4895,
+            "log_loss": 1.4,
+            "classification_report": {
+                "Normal": {
+                    "precision": 0.2755102040816326,
+                    "recall": 0.32335329341317365,
+                    "f1-score": 0.2975206611570248,
+                    "support": 167.0
+                },
+                "Abnormal_Heartbeat": {
+                    "precision": 0.20634920634920634,
+                    "recall": 0.23780487804878048,
+                    "f1-score": 0.22096317280453256,
+                    "support": 164.0
+                },
+                "Myocardial_Infarction": {
+                    "precision": 0.24,
+                    "recall": 0.15584415584415584,
+                    "f1-score": 0.1889763779527559,
+                    "support": 154.0
+                },
+                "Post_MI_History": {
+                    "precision": 0.27439024390243905,
+                    "recall": 0.27439024390243905,
+                    "f1-score": 0.27439024390243905,
+                    "support": 164.0
+                },
+                "accuracy": 0.24961479198767333,
+                "macro avg": {
+                    "precision": 0.2490624135833195,
+                    "recall": 0.24784814280213724,
+                    "f1-score": 0.24546261395418809,
+                    "support": 649.0
+                },
+                "weighted avg": {
+                    "precision": 0.24932430496595148,
+                    "recall": 0.24961479198767333,
+                    "f1-score": 0.24657361010460846,
+                    "support": 649.0
+                }
+            },
+            "confusion_matrix": [
+                [
+                    54,
+                    60,
+                    13,
+                    40
+                ],
+                [
+                    54,
+                    39,
+                    34,
+                    37
+                ],
+                [
+                    40,
+                    48,
+                    24,
+                    42
+                ],
+                [
+                    48,
+                    42,
+                    29,
+                    45
+                ]
+            ]
+        },
+        "MLPClassifier": {
+            "accuracy": 0.2465,
+            "macro_precision": 0.2494,
+            "macro_recall": 0.2457,
+            "macro_f1": 0.245,
+            "weighted_f1": 0.2454,
+            "roc_auc_ovr": 0.485,
+            "log_loss": 1.4164,
+            "classification_report": {
+                "Normal": {
+                    "precision": 0.22321428571428573,
+                    "recall": 0.2994011976047904,
+                    "f1-score": 0.2557544757033248,
+                    "support": 167.0
+                },
+                "Abnormal_Heartbeat": {
+                    "precision": 0.265625,
+                    "recall": 0.2073170731707317,
+                    "f1-score": 0.2328767123287671,
+                    "support": 164.0
+                },
+                "Myocardial_Infarction": {
+                    "precision": 0.24060150375939848,
+                    "recall": 0.2077922077922078,
+                    "f1-score": 0.2229965156794425,
+                    "support": 154.0
+                },
+                "Post_MI_History": {
+                    "precision": 0.2682926829268293,
+                    "recall": 0.2682926829268293,
+                    "f1-score": 0.2682926829268293,
+                    "support": 164.0
+                },
+                "accuracy": 0.2465331278890601,
+                "macro avg": {
+                    "precision": 0.24943336810012837,
+                    "recall": 0.2457007903736398,
+                    "f1-score": 0.24498009665959092,
+                    "support": 649.0
+                },
+                "weighted avg": {
+                    "precision": 0.24944825468911108,
+                    "recall": 0.2465331278890601,
+                    "f1-score": 0.2453686312465442,
+                    "support": 649.0
+                }
+            },
+            "confusion_matrix": [
+                [
+                    50,
+                    34,
+                    40,
+                    43
+                ],
+                [
+                    59,
+                    34,
+                    34,
+                    37
+                ],
+                [
+                    51,
+                    31,
+                    32,
+                    40
+                ],
+                [
+                    64,
+                    29,
+                    27,
+                    44
+                ]
+            ]
+        }
+    }
+}

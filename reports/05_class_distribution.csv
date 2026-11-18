@@ -1,0 +1,5 @@
+target_label,encoded_id,csv_records,csv_percentage,image_files,image_percentage,unique_images,unique_image_percentage
+Normal,0,1113,25.72,284,30.6,142,28.92
+Abnormal_Heartbeat,1,1092,25.24,233,25.11,233,47.45
+Myocardial_Infarction,2,1031,23.83,239,25.75,30,6.11
+Post_MI_History,3,1091,25.21,172,18.53,86,17.52

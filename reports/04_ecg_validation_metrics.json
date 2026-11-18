@@ -1,0 +1,49 @@
+{
+    "architecture": "ResNet18_2D_CNN",
+    "validation_samples": 143,
+    "best_epoch": 9,
+    "accuracy": 0.951,
+    "macro_precision": 0.9426,
+    "macro_recall": 0.9451,
+    "macro_f1": 0.943,
+    "weighted_f1": 0.9508,
+    "roc_auc_ovr": 0.9799,
+    "per_class_specificity_ovr": {
+        "Normal": 1.0,
+        "Abnormal_Heartbeat": 0.9815,
+        "Myocardial_Infarction": 0.9903,
+        "Post_MI_History": 0.9658
+    },
+    "per_class_sensitivity": {
+        "Normal": 1.0,
+        "Abnormal_Heartbeat": 0.8571,
+        "Myocardial_Infarction": 1.0,
+        "Post_MI_History": 0.9231
+    },
+    "confusion_matrix": [
+        [
+            42,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            30,
+            1,
+            4
+        ],
+        [
+            0,
+            0,
+            40,
+            0
+        ],
+        [
+            0,
+            2,
+            0,
+            24
+        ]
+    ]
+}

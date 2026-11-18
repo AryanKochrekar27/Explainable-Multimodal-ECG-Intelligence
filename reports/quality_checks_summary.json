@@ -1,0 +1,62 @@
+[
+    {
+        "check_id": "CHK_01_PHYSICAL_IMAGES_EXIST",
+        "description": "All referenced physical ECG images exist on disk",
+        "status": "PASS",
+        "details": "Verified 928 image paths on disk with 0 missing."
+    },
+    {
+        "check_id": "CHK_02_IMAGE_DECODING",
+        "description": "ECG image files can be decoded successfully without corruption",
+        "status": "PASS",
+        "details": "Tested sample of 50 images across classes: 0 decode failures."
+    },
+    {
+        "check_id": "CHK_03_TARGET_INTEGRITY",
+        "description": "Target labels are 100% complete and map to valid category IDs [0, 1, 2, 3]",
+        "status": "PASS",
+        "details": "4,327 records validated with 0 missing targets and valid 4-class encoding."
+    },
+    {
+        "check_id": "CHK_04_MULTIMODAL_PAIRING_STATUS",
+        "description": "Ground-truth linkage between synthetic CSV rows and physical ECG images",
+        "status": "BLOCKED",
+        "details": "Zero fabricated pairs created (verified: 0/4,327). CSV references non-existent 'ecg_X.jpg' whereas disk contains 'CLASS(X).jpg'."
+    },
+    {
+        "check_id": "CHK_05_PREPROCESSED_VALUES_FINITE",
+        "description": "Transformed feature matrices contain 0 NaNs and 0 infinite values",
+        "status": "PASS",
+        "details": "Checked all 19 features across Train (3028), Val (649), and Test (650)."
+    },
+    {
+        "check_id": "CHK_06_SPLIT_RECORD_DISJOINTNESS",
+        "description": "Zero record overlap across Train, Validation, and Test splits",
+        "status": "PASS",
+        "details": "Partitions are mutually disjoint (Train: 3028, Val: 649, Test: 650)."
+    },
+    {
+        "check_id": "CHK_07_PATIENT_ID_LEAKAGE",
+        "description": "Patient identifier isolation across splits",
+        "status": "NOT VERIFIABLE",
+        "details": "Patient IDs were not provided in the original dataset metadata. Explicitly noted as an empirical limitation."
+    },
+    {
+        "check_id": "CHK_08_IMAGE_DUPLICATE_LEAKAGE",
+        "description": "Zero identical image hash leakage across Train, Val, and Test splits",
+        "status": "PASS",
+        "details": "Hash-grouping confirmed: 0 duplicate scans leaked across partitions."
+    },
+    {
+        "check_id": "CHK_09_FEATURE_COLUMN_CONSISTENCY",
+        "description": "Feature columns and ordering are identical across Train, Val, and Test",
+        "status": "PASS",
+        "details": "19 transformed columns match perfectly across all three partitions."
+    },
+    {
+        "check_id": "CHK_10_PREPROCESSOR_FITTING_INTEGRITY",
+        "description": "Preprocessor fitted strictly on training partition without test-set leakage",
+        "status": "PASS",
+        "details": "Fitted on X_train_raw only; transform() applied to validation and test sets."
+    }
+]

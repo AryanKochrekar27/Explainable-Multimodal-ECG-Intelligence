@@ -1,0 +1,6 @@
+{
+    "Normal": 0,
+    "Abnormal_Heartbeat": 1,
+    "Myocardial_Infarction": 2,
+    "Post_MI_History": 3
+}

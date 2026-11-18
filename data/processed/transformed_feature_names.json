@@ -1,0 +1,21 @@
+[
+    "Age",
+    "Heart_Rate",
+    "Systolic_BP",
+    "Diastolic_BP",
+    "Cholesterol",
+    "Glucose",
+    "Troponin",
+    "PR_Interval",
+    "QRS_Duration",
+    "QT_Interval",
+    "P_Wave_Duration",
+    "T_Wave_Duration",
+    "ST_Segment_Level",
+    "RR_Interval",
+    "HRV_SDNN",
+    "HRV_RMSSD",
+    "R_Peak_Amplitude",
+    "S_Wave_Amplitude",
+    "Gender_Male"
+]

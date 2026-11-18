@@ -1,0 +1,4 @@
+Model,Modality,Test Accuracy,Macro Precision,Macro Recall,Macro F1,OVR ROC-AUC
+Clinical-Only (Random Forest),Tabular Clinical Variables,0.1825,0.189,0.1837,0.1796,0.4746
+ECG-Only Vision (ResNet-18),12-Lead Paper ECG Scans,0.8613,0.8644,0.852,0.8516,0.9672
+Multimodal Late Fusion,ECG Images + Clinical MLP,0.8759,0.8752,0.8633,0.8651,0.9716
